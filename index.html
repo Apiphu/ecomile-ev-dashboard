@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV & STM32 Telemetry Dashboard</title>
+  
+  <!-- Google Fonts: Orbitron & Prompt / Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind Configuration for Custom Cyberpunk / Modern EV Colors -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            digital: ['Orbitron', 'sans-serif'],
+            thai: ['Chakra Petch', 'Inter', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            cyber: {
+              bg: '#040907',
+              card: '#081411',
+              cardHover: '#0d1f1a',
+              border: '#14362b',
+              cyan: '#00e676',
+              blue: '#10b981',
+              green: '#00f5a0',
+              amber: '#f6ad55',
+              red: '#ff4b4b',
+              purple: '#38ef7d',
+            }
+          },
+          boxShadow: {
+            'neon-cyan': '0 0 25px rgba(0, 230, 118, 0.45)',
+            'neon-green': '0 0 25px rgba(0, 245, 160, 0.45)',
+            'neon-red': '0 0 25px rgba(255, 75, 75, 0.45)',
+            'neon-purple': '0 0 25px rgba(56, 239, 125, 0.45)',
+            'card-glass': '0 8px 32px 0 rgba(0, 0, 0, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-cyber-bg text-slate-100 font-thai min-h-screen antialiased selection:bg-emerald-500 selection:text-black">
+  
+  <!-- Background Glow & Grid -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute -top-40 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 -right-20 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-green-500/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6">
+    
+    <!-- HEADER BAR -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-cyber-card/90 border border-cyber-border backdrop-blur-xl shadow-card-glass">
+      <div class="flex items-center gap-3.5">
+        <div class="relative w-12 h-12 rounded-xl bg-slate-900/80 border border-emerald-500/40 p-1 flex items-center justify-center shadow-neon-cyan shrink-0 overflow-hidden backdrop-blur-md">
+          <img src="Ecomile lab.png" alt="Ecomile Lab Logo" class="w-full h-full object-contain rounded-lg">
+        </div>
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-xl font-bold tracking-wider font-digital text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-300" id="main-brand-title">
+              ECOMILE LAB DASHBOARD
+            </h1>
+            <span class="px-2 py-0.5 text-xs font-semibold rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              STM32 QUAD-NODE
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">
+            ระบบมอนิเตอร์และแสดงผลข้อมูลยานยนต์ไฟฟ้าแบบเรียลไทม์
+            <span class="block text-[11px] text-emerald-400/90 font-mono tracking-wide mt-0.5 brand-subtitle-telemetry">(Live Telemetry System)</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Header Status, Drive Mode & Clock -->
+      <div class="flex items-center flex-wrap gap-3 text-sm">
+        <!-- CAN Bus Connection Status -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/90 border border-slate-800">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" id="live-indicator"></span>
+          </span>
+          <span class="text-xs font-mono text-slate-300" id="system-status-text">CAN BUS: CONNECTED</span>
+        </div>
+
+        <!-- Drive Mode Indicator Badge -->
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900/90 border border-slate-800">
+          <span class="text-xs text-slate-400">MODE:</span>
+          <span class="text-xs font-bold font-digital text-emerald-400 uppercase tracking-wide" id="header-drive-mode">SPORT</span>
+        </div>
+
+        <!-- Theme Toggle (Dark / Light Mode) -->
+        <button id="theme-toggle-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-amber-400/50 text-amber-400 hover:text-amber-300 transition-all cursor-pointer shadow-sm" title="สลับโหมดพื้นหลัง ขาว/ดำ">
+          <i data-lucide="sun" class="w-4 h-4"></i>
+          <span class="text-xs font-semibold text-slate-300" id="theme-label">Light Mode</span>
+        </button>
+
+        <!-- Clock & Simulation Timer -->
+        <div class="text-right font-mono px-3 py-1 rounded-lg bg-slate-900/90 border border-slate-800 min-w-[90px]">
+          <div class="text-xs font-bold text-slate-200" id="live-clock">00:00:00</div>
+          <div class="text-[10px] text-emerald-400/80">LATENCY: <span id="telemetry-latency">12</span> ms</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- TOP ROW: SPEEDOMETER, MOTOR RPM & BATTERY OVERVIEW -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- 1. SPEEDOMETER (CENTERPIECE) - 5 Cols -->
+      <div class="lg:col-span-5 p-6 rounded-2xl bg-cyber-card/90 border border-cyber-border backdrop-blur-xl shadow-card-glass flex flex-col justify-between relative overflow-hidden group">
+        <div class="flex justify-between items-center z-10">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm shrink-0">
+              <i data-lucide="gauge" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold tracking-wider uppercase text-slate-200">Vehicle Speed</h2>
+              <span class="text-[11px] text-slate-400">ความเร็วรถยนต์</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-700/80 text-xs shadow-sm">
+            <span class="text-[11px] text-slate-400 font-mono mr-1 font-semibold">GEAR:</span>
+            <span class="text-slate-500 font-bold font-sans">P</span>
+            <span class="text-slate-500 font-bold font-sans">R</span>
+            <span class="text-slate-500 font-bold font-sans">N</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-400 text-black font-black font-sans text-xs shadow-neon-cyan" id="gear-indicator">D</span>
+          </div>
+        </div>
+
+        <!-- Big Digital Gauge -->
+        <div class="my-4 text-center relative z-10 flex flex-col items-center justify-center py-2">
+          <!-- Circular Speed SVG Ring -->
+          <div class="relative w-56 h-56 flex items-center justify-center">
+            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+              <!-- Background Track -->
+              <circle cx="100" cy="100" r="78" stroke="#10251f" stroke-width="12" fill="transparent" stroke-dasharray="490" stroke-dashoffset="122" stroke-linecap="round" class="speed-bg-track"/>
+              <!-- Glow Track -->
+              <circle id="speed-ring" cx="100" cy="100" r="78" stroke="url(#speed-gradient)" stroke-width="12" fill="transparent" 
+                stroke-dasharray="490" stroke-dashoffset="490" stroke-linecap="round" class="transition-all duration-300"/>
+              
+              <defs>
+                <linearGradient id="speed-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f5a0" />
+                  <stop offset="60%" stop-color="#00e676" />
+                  <stop offset="100%" stop-color="#ff4b4b" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <!-- Speed Value in Center -->
+            <div class="absolute flex flex-col items-center justify-center">
+              <span class="text-6xl font-black font-digital tracking-tight text-white drop-shadow-[0_0_15px_rgba(0,230,118,0.6)]" id="speed-value">
+                0
+              </span>
+              <span class="text-xs font-semibold text-emerald-400 font-digital tracking-widest mt-1">KM / HR</span>
+            </div>
+          </div>
+
+          <!-- Speed Limit & Acceleration info -->
+          <div class="grid grid-cols-2 gap-3 w-full mt-2 pt-3 border-t border-slate-800/80 text-xs">
+            <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-left flex justify-between items-center">
+              <span class="text-slate-400 text-[11px]">0-100 km/h:</span>
+              <span class="font-mono text-emerald-400 font-bold ml-1" id="accel-stat">3.8s</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-right flex justify-between items-center">
+              <span class="text-slate-400 text-[11px]">Peak Speed:</span>
+              <span class="font-mono text-white font-bold ml-1" id="max-speed-stat">0 km/h</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-400 flex justify-between items-center z-10 pt-2 border-t border-slate-800/80">
+          <span class="text-[11px]">มาตรวัดความเร็วแบบสปอร์ต</span>
+          <span class="text-[11px] text-emerald-400/90 font-mono bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">GPS + CAN SPEED</span>
+        </div>
+      </div>
+
+      <!-- 2. MOTOR TELEMETRY (RPM & TEMPERATURE) - 4 Cols -->
+      <div class="lg:col-span-4 p-6 rounded-2xl bg-cyber-card/90 border border-cyber-border backdrop-blur-xl shadow-card-glass flex flex-col justify-between">
+        <div class="flex justify-between items-center mb-2">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm shrink-0">
+              <i data-lucide="activity" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold tracking-wider uppercase text-slate-200">Motor Telemetry</h2>
+              <span class="text-[11px] text-slate-400">ระบบมอเตอร์ขับเคลื่อน</span>
+            </div>
+          </div>
+          <span class="px-2.5 py-1 text-[10px] font-mono font-bold rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            PMSM MOTOR
+          </span>
+        </div>
+
+        <!-- Motor RPM Progress Bar & Display -->
+        <div class="space-y-4 my-auto py-2">
+          <div>
+            <div class="flex justify-between items-baseline mb-1">
+              <span class="text-xs text-slate-300 font-semibold">Motor RPM (ความเร็วรอบมอเตอร์)</span>
+              <div class="text-right">
+                <span class="text-3xl font-black font-digital text-emerald-400" id="rpm-value">0</span>
+                <span class="text-xs font-mono text-slate-400 ml-1">RPM</span>
+              </div>
+            </div>
+            
+            <!-- Dynamic RPM Bar -->
+            <div class="w-full bg-slate-950 rounded-full h-3.5 p-0.5 border border-slate-700/80 relative overflow-hidden">
+              <div id="rpm-bar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 via-green-400 to-amber-400 transition-all duration-200" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+              <span>0</span>
+              <span>2.5k</span>
+              <span>5k</span>
+              <span>7.5k</span>
+              <span class="text-red-400 font-bold">10k MAX</span>
+            </div>
+          </div>
+
+          <!-- Motor Temperature Gauge (High-Contrast Eco Glass) -->
+          <div class="p-3.5 rounded-xl bg-gradient-to-r from-slate-900/95 via-emerald-950/40 to-slate-900/95 border border-emerald-500/40 shadow-[0_0_15px_rgba(0,230,118,0.1)] flex items-center justify-between transition-all">
+            <div class="flex items-center gap-3">
+              <div class="p-2.5 rounded-lg bg-orange-500/15 text-orange-400 border border-orange-500/30 shadow-sm shrink-0">
+                <i data-lucide="flame" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-slate-200">Motor Temperature</div>
+                <div class="text-[11px] text-slate-400 whitespace-nowrap">อุณหภูมิสะสมของมอเตอร์</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="flex items-baseline justify-end">
+                <span class="text-2xl font-black font-digital text-white tracking-tight" id="motor-temp-value">42.5</span>
+                <span class="text-xs font-bold text-orange-400 ml-1">°C</span>
+              </div>
+              <span class="px-2 py-0.5 text-[10px] font-mono font-bold rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 inline-block mt-0.5" id="motor-temp-status">NORMAL</span>
+            </div>
+          </div>
+
+          <!-- Motor Power & Torque -->
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/40 text-center transition-all">
+              <div class="text-slate-400 text-[11px]">Instant Power</div>
+              <div class="font-digital font-bold text-emerald-400 text-base" id="motor-power-kw">0.0 kW</div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-amber-500/40 text-center transition-all">
+              <div class="text-slate-400 text-[11px]">Motor Torque</div>
+              <div class="font-digital font-bold text-amber-300 text-base" id="motor-torque">0 Nm</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500 flex justify-between items-center pt-2 border-t border-slate-800/80">
+          <span class="text-slate-400">Inverter: Dual SiC MOSFET</span>
+          <span class="text-emerald-400 font-mono text-[11px] font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">EFF: 97.2%</span>
+        </div>
+      </div>
+
+      <!-- 3. BATTERY & RANGE (ESTIMATED RANGE) - 3 Cols -->
+      <div class="lg:col-span-3 p-6 rounded-2xl bg-cyber-card/90 border border-cyber-border backdrop-blur-xl shadow-card-glass flex flex-col justify-between">
+        <div class="flex justify-between items-center gap-2 mb-3">
+          <div class="flex items-center gap-2 min-w-0">
+            <div class="p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm shrink-0">
+              <i data-lucide="battery-charging" class="w-4 h-4"></i>
+            </div>
+            <div class="min-w-0">
+              <h2 class="text-xs sm:text-sm font-bold tracking-wide uppercase text-slate-200 whitespace-nowrap">Battery Pack</h2>
+              <span class="text-[10px] text-slate-400 block">สถานะแบตเตอรี่</span>
+            </div>
+          </div>
+          <span class="text-xs font-mono font-bold text-emerald-400 bg-slate-900/90 px-2 py-0.5 rounded-lg border border-slate-700/80 shrink-0 ml-auto" id="battery-voltage">392.4 V</span>
+        </div>
+
+        <!-- Battery State of Charge (%) -->
+        <div class="space-y-3.5 my-auto py-2">
+          <div class="text-center p-3.5 rounded-xl bg-gradient-to-r from-slate-900/95 via-emerald-950/40 to-slate-900/95 border border-emerald-500/40 shadow-[0_0_15px_rgba(0,230,118,0.1)] relative">
+            <span class="text-xs text-slate-300 font-medium block mb-1">State of Charge (ระดับประจุแบตเตอรี่)</span>
+            <div class="flex items-baseline justify-center gap-1">
+              <span class="text-4xl font-black font-digital text-emerald-400 drop-shadow-[0_0_10px_rgba(0,230,118,0.5)]" id="battery-pct">
+                85
+              </span>
+              <span class="text-lg font-bold text-emerald-300">%</span>
+            </div>
+
+            <!-- Battery Level Indicator Visual -->
+            <div class="w-full bg-slate-950 rounded-full h-3 mt-2 overflow-hidden p-0.5 border border-slate-700/80">
+              <div id="battery-bar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-green-400 transition-all duration-300" style="width: 85%"></div>
+            </div>
+          </div>
+
+          <!-- Estimated Range (Clean Card Layout) -->
+          <div class="text-center p-3.5 rounded-xl bg-gradient-to-r from-slate-900/95 via-emerald-950/40 to-slate-900/95 border border-emerald-500/40 shadow-[0_0_15px_rgba(0,230,118,0.1)] relative">
+            <div class="flex items-center justify-between mb-1">
+              <div class="flex items-center gap-1.5">
+                <i data-lucide="navigation" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span class="text-xs text-slate-300 font-semibold">Estimated Range</span>
+              </div>
+              <span class="text-[11px] text-slate-400 font-medium">ระยะทางที่วิ่งได้</span>
+            </div>
+            
+            <div class="flex items-baseline justify-center gap-1.5 my-1">
+              <span class="text-4xl font-black font-digital text-white tracking-tight" id="range-km">340</span>
+              <span class="text-base font-bold text-emerald-400 font-digital">KM</span>
+            </div>
+            
+            <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono pt-1.5 border-t border-slate-800/80 mt-1">
+              <span>ALGORITHM: DYNAMIC</span>
+              <span class="text-emerald-400 font-semibold">CAN SYNC</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-400 flex justify-between items-center pt-2 border-t border-slate-800/80">
+          <span class="text-slate-400">Capacity: <strong class="text-slate-200 font-mono">64.8 kWh</strong></span>
+          <span class="text-emerald-400 font-mono font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 text-[11px]" id="battery-health">SOH: 99.4%</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MIDDLE ROW: STM32 QUAD-MODULE TEMPERATURES (MAIN REQUIREMENT) -->
+    <div class="p-6 rounded-2xl bg-cyber-card/85 border border-cyber-border backdrop-blur-xl shadow-card-glass space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <i data-lucide="cpu" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold tracking-wider text-slate-100 flex items-center gap-2 flex-wrap">
+              <span>STM32 MODULE TEMPERATURES</span>
+              <span class="text-xs font-normal text-slate-400">(ระบบเฝ้าระวังอุณหภูมิแบบกระจายหลายโหนดผ่าน CAN-Bus)</span>
+            </h2>
+            <p class="text-xs text-slate-400">CAN-Bus Distributed Multi-Node Thermal Monitoring System</p>
+          </div>
+        </div>
+
+        <!-- Thermal Status Summary Badge -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-slate-400">Thermal Matrix:</span>
+          <span class="px-2.5 py-1 text-xs font-bold font-mono rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" id="thermal-overall-badge">
+            OPTIMAL (AVG: <span id="avg-temp-val">34.2</span>°C)
+          </span>
+        </div>
+      </div>
+
+      <!-- 4 Module Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Module 1: Battery Management Unit (BMU STM32) -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 transition-all group relative overflow-hidden" id="card-mod-1">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="mod-dot-1"></span>
+                <span class="text-xs font-bold font-digital text-emerald-300">MODULE 01</span>
+              </div>
+              <span class="text-[11px] text-slate-400">BMU Master (STM32F4)</span>
+            </div>
+            <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" id="mod-status-1">NORMAL</span>
+          </div>
+
+          <div class="my-3 flex items-baseline justify-between">
+            <span class="text-3xl font-black font-digital text-white" id="temp-mod-1">34.5</span>
+            <span class="text-sm font-bold text-emerald-400">°C</span>
+          </div>
+
+          <!-- Temp Progress Bar -->
+          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div id="bar-mod-1" class="h-full rounded-full bg-emerald-400 transition-all duration-300" style="width: 35%"></div>
+          </div>
+
+          <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>ADDR: 0x101</span>
+            <span>VCORE: 3.31V</span>
+          </div>
+        </div>
+
+        <!-- Module 2: Inverter Controller (MCU STM32) -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 transition-all group relative overflow-hidden" id="card-mod-2">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="mod-dot-2"></span>
+                <span class="text-xs font-bold font-digital text-emerald-300">MODULE 02</span>
+              </div>
+              <span class="text-[11px] text-slate-400">Inverter Core (STM32G4)</span>
+            </div>
+            <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" id="mod-status-2">NORMAL</span>
+          </div>
+
+          <div class="my-3 flex items-baseline justify-between">
+            <span class="text-3xl font-black font-digital text-white" id="temp-mod-2">38.2</span>
+            <span class="text-sm font-bold text-emerald-400">°C</span>
+          </div>
+
+          <!-- Temp Progress Bar -->
+          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div id="bar-mod-2" class="h-full rounded-full bg-emerald-400 transition-all duration-300" style="width: 38%"></div>
+          </div>
+
+          <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>ADDR: 0x102</span>
+            <span>VCORE: 3.29V</span>
+          </div>
+        </div>
+
+        <!-- Module 3: Vehicle Control Unit (VCU STM32) -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 transition-all group relative overflow-hidden" id="card-mod-3">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="mod-dot-3"></span>
+                <span class="text-xs font-bold font-digital text-emerald-300">MODULE 03</span>
+              </div>
+              <span class="text-[11px] text-slate-400">Vehicle VCU (STM32H7)</span>
+            </div>
+            <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" id="mod-status-3">NORMAL</span>
+          </div>
+
+          <div class="my-3 flex items-baseline justify-between">
+            <span class="text-3xl font-black font-digital text-white" id="temp-mod-3">32.8</span>
+            <span class="text-sm font-bold text-emerald-400">°C</span>
+          </div>
+
+          <!-- Temp Progress Bar -->
+          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div id="bar-mod-3" class="h-full rounded-full bg-emerald-400 transition-all duration-300" style="width: 33%"></div>
+          </div>
+
+          <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>ADDR: 0x103</span>
+            <span>VCORE: 3.30V</span>
+          </div>
+        </div>
+
+        <!-- Module 4: Telemetry & Gateway (Gateway STM32) -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 transition-all group relative overflow-hidden" id="card-mod-4">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="mod-dot-4"></span>
+                <span class="text-xs font-bold font-digital text-emerald-300">MODULE 04</span>
+              </div>
+              <span class="text-[11px] text-slate-400">Gateway/IoT (STM32F1)</span>
+            </div>
+            <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" id="mod-status-4">NORMAL</span>
+          </div>
+
+          <div class="my-3 flex items-baseline justify-between">
+            <span class="text-3xl font-black font-digital text-white" id="temp-mod-4">31.4</span>
+            <span class="text-sm font-bold text-emerald-400">°C</span>
+          </div>
+
+          <!-- Temp Progress Bar -->
+          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+            <div id="bar-mod-4" class="h-full rounded-full bg-emerald-400 transition-all duration-300" style="width: 31%"></div>
+          </div>
+
+          <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>ADDR: 0x104</span>
+            <span>VCORE: 3.32V</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW: ENERGY CONSUMPTION CHART & SYSTEM ALERTS -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- 1. ENERGY CONSUMPTION (REAL-TIME CHART & CALCULATION) - 7 Cols -->
+      <div class="lg:col-span-7 p-6 rounded-2xl bg-cyber-card/90 border border-cyber-border backdrop-blur-xl shadow-card-glass flex flex-col justify-between space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 shadow-sm shrink-0">
+              <i data-lucide="zap" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold tracking-wider uppercase text-slate-200">Energy Consumption</h2>
+              <span class="text-[11px] text-slate-400">อัตราการสิ้นเปลืองพลังงาน (kW & kWh)</span>
+            </div>
+          </div>
+
+          <!-- Live Power Badge -->
+          <div class="flex items-center gap-2">
+            <div class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-right shadow-sm">
+              <span class="text-[10px] text-amber-400 block font-mono font-semibold">AVERAGE EFFICIENCY</span>
+              <span class="text-sm font-bold font-digital text-white" id="avg-consumption">14.8 kWh/100km</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time Chart Container -->
+        <div class="w-full h-56 relative">
+          <canvas id="energyChart"></canvas>
+        </div>
+
+        <!-- Metrics & Formula Bar -->
+        <div class="grid grid-cols-3 gap-3 pt-3 border-t border-slate-800/80 text-xs">
+          <div class="p-3 rounded-xl bg-gradient-to-br from-slate-900/95 to-amber-950/20 border border-amber-500/30 text-center shadow-sm">
+            <div class="text-slate-400 text-[11px]">Instant Power</div>
+            <div class="font-digital font-black text-amber-400 text-base mt-0.5" id="instant-power">0.0 kW</div>
+          </div>
+          <div class="p-3 rounded-xl bg-gradient-to-br from-slate-900/95 to-emerald-950/20 border border-emerald-500/30 text-center shadow-sm">
+            <div class="text-slate-400 text-[11px]">Total Energy Used</div>
+            <div class="font-digital font-black text-white text-base mt-0.5" id="total-kwh">1.42 kWh</div>
+          </div>
+          <div class="p-3 rounded-xl bg-gradient-to-br from-slate-900/95 to-green-950/20 border border-green-500/30 text-center shadow-sm">
+            <div class="text-slate-400 text-[11px]">Regen Recovered</div>
+            <div class="font-digital font-black text-emerald-400 text-base mt-0.5" id="regen-kwh">+0.38 kWh</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. SYSTEM ALERTS (การแจ้งเตือนสถานะระบบ) - 5 Cols -->
+      <div class="lg:col-span-5 p-6 rounded-2xl bg-cyber-card/90 border border-cyber-border backdrop-blur-xl shadow-card-glass flex flex-col justify-between space-y-4">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 shadow-sm shrink-0">
+              <i data-lucide="bell" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold tracking-wider uppercase text-slate-200">System Alerts</h2>
+              <span class="text-[11px] text-slate-400">การแจ้งเตือนสถานะระบบ</span>
+            </div>
+          </div>
+          <button id="clear-alerts-btn" class="text-[11px] font-semibold text-slate-300 hover:text-emerald-400 transition-colors px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/40">
+            Clear Logs
+          </button>
+        </div>
+
+        <!-- Alert Feeds (Scrollable) -->
+        <div id="alerts-container" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+          <!-- Dynamic Alerts will be prepended here -->
+          <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-xs flex items-start gap-2.5 shadow-sm">
+            <div class="p-1 rounded-lg bg-emerald-500/20 text-emerald-400 shrink-0 mt-0.5">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+            </div>
+            <div>
+              <div class="font-bold text-emerald-300">All Systems Operational</div>
+              <div class="text-[11px] text-slate-400 font-mono">STM32 Modules 1-4 synced via CAN Bus @ 500kbps</div>
+            </div>
+            <span class="ml-auto text-[10px] text-slate-500 font-mono">NOW</span>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-xs flex items-start gap-2.5 shadow-sm">
+            <div class="p-1 rounded-lg bg-emerald-500/20 text-emerald-400 shrink-0 mt-0.5">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            </div>
+            <div>
+              <div class="font-bold text-emerald-300">Drive Inverter Ready</div>
+              <div class="text-[11px] text-slate-400 font-mono">High Voltage Interlock Loop (HVIL) Closed</div>
+            </div>
+            <span class="ml-auto text-[10px] text-slate-500 font-mono">-00:15</span>
+          </div>
+        </div>
+
+        <!-- System Diagnostics Footer -->
+        <div class="pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs text-slate-400">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Diagnostic Port: <strong class="text-slate-200">Active</strong></span>
+          </div>
+          <span class="font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 text-[11px]">DTC ERRORS: 0</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- INTERACTIVE SIMULATION CONTROLLER (MOCKUP CONTROLS) -->
+    <div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-cyber-card to-slate-900 border border-cyber-border/80 backdrop-blur-xl shadow-card-glass space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 text-black font-bold shadow-neon-cyan shrink-0">
+            <i data-lucide="sliders" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-200">
+              Interactive Hardware & Telemetry Simulator
+            </h3>
+            <p class="text-xs text-slate-400">ระบบจำลองฮาร์ดแวร์และการส่งข้อมูลระยะไกลแบบเรียลไทม์</p>
+          </div>
+        </div>
+
+        <!-- Simulation Power / Auto Pilot Mode -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="btn-auto-sim" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-400 text-black hover:bg-emerald-300 transition-all flex items-center gap-1.5 shadow-neon-cyan">
+            <i data-lucide="play" class="w-3.5 h-3.5 fill-current" id="auto-sim-icon"></i>
+            <span id="auto-sim-label">Auto Simulation: Active</span>
+          </button>
+          
+          <button id="btn-trigger-alert" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30 transition-all flex items-center gap-1.5">
+            <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
+            <span>Test Overheat Alert</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Controls Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        
+        <!-- 1. Speed / Throttle Slider -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/40 transition-all space-y-2 shadow-sm">
+          <div class="flex justify-between text-xs">
+            <label for="speed-slider" class="text-slate-200 font-semibold flex items-center gap-1.5">
+              <i data-lucide="gauge" class="w-4 h-4 text-emerald-400"></i>
+              <span>Manual Speed (คันเร่ง)</span>
+            </label>
+            <span class="font-mono text-emerald-400 font-bold" id="slider-speed-val">0 km/h</span>
+          </div>
+          <input type="range" id="speed-slider" min="0" max="180" value="0" class="w-full h-2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+          <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>0 km/h</span>
+            <span>60 km/h</span>
+            <span>120 km/h</span>
+            <span>180 km/h</span>
+          </div>
+        </div>
+
+        <!-- 2. Drive Mode Selector -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/40 transition-all space-y-2 shadow-sm">
+          <div class="text-xs text-slate-200 font-semibold flex items-center gap-1.5">
+            <i data-lucide="compass" class="w-4 h-4 text-emerald-400"></i>
+            <span>Drive Mode (โหมดการขับขี่)</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <button class="drive-mode-btn py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all" data-mode="ECO">
+              ECO
+            </button>
+            <button class="drive-mode-btn py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all" data-mode="NORMAL">
+              NORMAL
+            </button>
+            <button class="drive-mode-btn py-1.5 text-xs font-bold rounded-lg bg-emerald-400 text-black border border-emerald-300 shadow-neon-cyan transition-all" data-mode="SPORT">
+              SPORT
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Battery Charge Simulation Slider -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 hover:border-emerald-500/40 transition-all space-y-2 shadow-sm">
+          <div class="flex justify-between text-xs">
+            <label for="battery-slider" class="text-slate-200 font-semibold flex items-center gap-1.5">
+              <i data-lucide="battery" class="w-4 h-4 text-emerald-400"></i>
+              <span>Set Battery (% แบตเตอรี่)</span>
+            </label>
+            <span class="font-mono text-emerald-400 font-bold" id="slider-battery-val">85%</span>
+          </div>
+          <input type="range" id="battery-slider" min="5" max="100" value="85" class="w-full h-2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+          <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+            <span class="text-red-400 font-semibold">5% Low</span>
+            <span>50%</span>
+            <span class="text-emerald-400 font-semibold">100% Full</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FOOTER: Project Credits & Submission Info -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span>ECOMILE LAB Dashboard System • Quad STM32 Node Prototype</span>
+      </div>
+      <div class="text-slate-400">
+        Ready for GitHub Repository & GitHub Pages Deployment 🚀
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

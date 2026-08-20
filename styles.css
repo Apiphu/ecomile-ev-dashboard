@@ -1,0 +1,273 @@
+/* Custom Animations & Styles */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(0, 230, 118, 0.8);
+  }
+}
+
+.glow-active {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+/* Custom Scrollbar for Alert Logs */
+#alerts-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+#alerts-container::-webkit-scrollbar-track {
+  background: rgba(8, 20, 17, 0.6);
+  border-radius: 4px;
+}
+
+#alerts-container::-webkit-scrollbar-thumb {
+  background: rgba(20, 54, 43, 0.8);
+  border-radius: 4px;
+}
+
+#alerts-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 230, 118, 0.5);
+}
+
+/* Custom Slider Styling */
+input[type=range] {
+  -webkit-appearance: none;
+  background: #0d1f1a;
+  border-radius: 9999px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #00e676;
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.8);
+  cursor: pointer;
+  border: 2px solid #ffffff;
+}
+
+#battery-slider::-webkit-slider-thumb {
+  background: #00f5a0;
+  box-shadow: 0 0 10px rgba(0, 245, 160, 0.8);
+}
+
+/* ==========================================================================
+   LIGHT THEME (โหมดสว่าง / สีขาว)
+   ========================================================================== */
+body.light-theme {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* 1. Card Containers & Main Panels */
+body.light-theme header,
+body.light-theme .bg-cyber-card\/90,
+body.light-theme .bg-cyber-card\/85,
+body.light-theme footer {
+  background-image: none !important;
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* 2. Inner Sub-Cards (Motor Temp, State of Charge, Estimated Range, Metrics) */
+body.light-theme .bg-slate-900\/90,
+body.light-theme .bg-slate-900\/95,
+body.light-theme .bg-slate-900\/80,
+body.light-theme .bg-slate-900\/70,
+body.light-theme .bg-gradient-to-r,
+body.light-theme .bg-gradient-to-br,
+body.light-theme .bg-gradient-to-tr {
+  background-image: none !important;
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Specific Sub-Cards for Motor Temp, SoC, Range, Energy Boxes */
+body.light-theme #card-mod-1,
+body.light-theme #card-mod-2,
+body.light-theme #card-mod-3,
+body.light-theme #card-mod-4 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-theme #card-mod-1:hover,
+body.light-theme #card-mod-2:hover,
+body.light-theme #card-mod-3:hover,
+body.light-theme #card-mod-4:hover {
+  border-color: #10b981 !important;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.12) !important;
+}
+
+/* 3. Typography Hierarchy & Brand in Light Mode */
+body.light-theme #main-brand-title {
+  background-image: linear-gradient(to right, #065f46, #059669, #0d9488) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  font-weight: 900 !important;
+}
+
+body.light-theme .brand-subtitle-telemetry {
+  color: #047857 !important;
+  font-weight: 700 !important;
+}
+
+body.light-theme .text-slate-100,
+body.light-theme .text-slate-200,
+body.light-theme .text-white {
+  color: #0f172a !important;
+}
+
+body.light-theme .text-slate-300 {
+  color: #1e293b !important;
+}
+
+body.light-theme .text-slate-400 {
+  color: #475569 !important;
+}
+
+body.light-theme .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Specific Numbers in Light Mode */
+body.light-theme #speed-value,
+body.light-theme #rpm-value,
+body.light-theme #motor-temp-value,
+body.light-theme #range-km,
+body.light-theme #total-kwh,
+body.light-theme #temp-mod-1,
+body.light-theme #temp-mod-2,
+body.light-theme #temp-mod-3,
+body.light-theme #temp-mod-4 {
+  color: #0f172a !important;
+}
+
+body.light-theme #battery-pct {
+  color: #059669 !important;
+}
+
+/* 4. High-Contrast Yellow/Amber for Light Mode */
+body.light-theme .text-yellow-300,
+body.light-theme .text-yellow-400,
+body.light-theme .text-amber-300,
+body.light-theme .text-amber-400 {
+  color: #d97706 !important; /* Deep Amber for clear readability on white */
+}
+
+body.light-theme .bg-yellow-500\/10,
+body.light-theme .bg-amber-500\/15 {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+}
+
+/* 5. Emerald Accents for Light Mode */
+body.light-theme .text-emerald-300,
+body.light-theme .text-emerald-400 {
+  color: #059669 !important;
+}
+
+body.light-theme .bg-emerald-500\/10,
+body.light-theme .bg-emerald-500\/15,
+body.light-theme .bg-emerald-500\/20 {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+/* 6. Orange & Alert Accents for Light Mode */
+body.light-theme .text-orange-400 {
+  color: #ea580c !important;
+}
+
+body.light-theme .bg-orange-500\/15 {
+  background-color: #fff7ed !important;
+  border-color: #fed7aa !important;
+}
+
+body.light-theme .bg-red-950\/30 {
+  background-color: #fef2f2 !important;
+  border-color: #f87171 !important;
+}
+
+body.light-theme .bg-amber-950\/20 {
+  background-color: #fffbeb !important;
+  border-color: #fbbf24 !important;
+}
+
+/* 7. Hardware & Telemetry Simulator Container at Bottom */
+body.light-theme .p-6.rounded-2xl.bg-gradient-to-r.from-slate-900 {
+  background-image: none !important;
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 8. Progress Tracks & Sliders */
+body.light-theme .speed-bg-track {
+  stroke: #e2e8f0 !important;
+}
+
+body.light-theme .bg-slate-950,
+body.light-theme .bg-slate-800 {
+  background-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme input[type=range] {
+  background: #e2e8f0 !important;
+}
+
+/* 9. Borders */
+body.light-theme .border-slate-800,
+body.light-theme .border-slate-800\/80,
+body.light-theme .border-slate-700,
+body.light-theme .border-slate-700\/80,
+body.light-theme .border-cyber-border,
+body.light-theme .border-cyber-border\/80 {
+  border-color: #e2e8f0 !important;
+}
+
+/* 10. Alert Log Rows in Light Mode */
+body.light-theme #alerts-container > div {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-theme .alert-title {
+  color: #0f172a !important; /* Dark Slate 900 - คมชัด ไม่แสบตา */
+}
+
+body.light-theme .alert-msg {
+  color: #475569 !important; /* Slate 600 - สบายตา */
+}
+
+body.light-theme .alert-time {
+  color: #94a3b8 !important;
+}
+
+body.light-theme .alert-icon-box {
+  background-color: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+body.light-theme .text-cyan-300,
+body.light-theme .text-cyan-400,
+body.light-theme .text-cyan-500 {
+  color: #0369a1 !important; /* เปลี่ยนสีฟ้านีออนสว่างแสบตาเป็นสีน้ำเงินเข้มสบายตา */
+}
+
+body.light-theme #alerts-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+body.light-theme #alerts-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
