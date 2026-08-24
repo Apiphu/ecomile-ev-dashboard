@@ -40,8 +40,8 @@ input[type=range] {
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 18px;
-  width: 18px;
+  height: 16px;
+  width: 16px;
   border-radius: 50%;
   background: #00e676;
   box-shadow: 0 0 10px rgba(0, 230, 118, 0.8);
@@ -54,8 +54,39 @@ input[type=range]::-webkit-slider-thumb {
   box-shadow: 0 0 10px rgba(0, 245, 160, 0.8);
 }
 
+/* 2D G-Force Radar Crosshair */
+.gforce-radar {
+  background: radial-gradient(circle, rgba(0, 230, 118, 0.05) 0%, rgba(4, 9, 7, 0.9) 70%);
+  border: 1px solid rgba(20, 54, 43, 0.8);
+  position: relative;
+}
+
+.gforce-circle {
+  border: 1px dashed rgba(0, 230, 118, 0.25);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.gforce-target-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #00e676;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 12px #00e676, 0 0 20px rgba(0, 230, 118, 0.8);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.08s ease-out;
+}
+
 /* ==========================================================================
-   LIGHT THEME (โหมดสว่าง / สีขาว)
+   LIGHT THEME (โหมดสว่าง / สีขาว สำหรับจอเต็นท์พิทกลางวัน)
    ========================================================================== */
 body.light-theme {
   background-color: #f8fafc !important;
@@ -66,28 +97,68 @@ body.light-theme {
 body.light-theme header,
 body.light-theme .bg-cyber-card\/90,
 body.light-theme .bg-cyber-card\/85,
+body.light-theme .bg-cyber-card,
 body.light-theme footer {
   background-image: none !important;
-  background-color: rgba(255, 255, 255, 0.96) !important;
+  background-color: rgba(255, 255, 255, 0.97) !important;
   border-color: #e2e8f0 !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03) !important;
+  box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.06), 0 4px 10px -2px rgba(0, 0, 0, 0.03) !important;
 }
 
-/* 2. Inner Sub-Cards (Motor Temp, State of Charge, Estimated Range, Metrics) */
+/* 2. Hero Center Speedometer Card */
+body.light-theme #speedometer-card {
+  background-image: none !important;
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.06), 0 4px 10px -2px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.light-theme #speedometer-card h2 {
+  color: #065f46 !important;
+}
+
+body.light-theme #speedometer-card #speed-value {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+body.light-theme #speedometer-card .text-emerald-400,
+body.light-theme #speedometer-card .text-emerald-300 {
+  color: #059669 !important;
+}
+
+body.light-theme #speedometer-card .speed-bg-track {
+  stroke: #e2e8f0 !important;
+}
+
+body.light-theme #speedometer-card .bg-slate-950,
+body.light-theme #speedometer-card .bg-slate-900\/95,
+body.light-theme #speedometer-card .bg-slate-900\/90 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-theme #speedometer-card #rpm-value {
+  color: #0f172a !important;
+}
+
+/* 3. Inner Sub-Cards (Motor Temp, State of Charge, Estimated Range, Metrics) */
 body.light-theme .bg-slate-900\/90,
 body.light-theme .bg-slate-900\/95,
 body.light-theme .bg-slate-900\/80,
 body.light-theme .bg-slate-900\/70,
+body.light-theme .bg-slate-900,
 body.light-theme .bg-gradient-to-r,
 body.light-theme .bg-gradient-to-br,
-body.light-theme .bg-gradient-to-tr {
+body.light-theme .bg-gradient-to-tr,
+body.light-theme .bg-gradient-to-b {
   background-image: none !important;
   background-color: #f8fafc !important;
   border-color: #e2e8f0 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
 }
 
-/* Specific Sub-Cards for Motor Temp, SoC, Range, Energy Boxes */
+/* Specific Sub-Cards for STM32 Modules */
 body.light-theme #card-mod-1,
 body.light-theme #card-mod-2,
 body.light-theme #card-mod-3,
@@ -104,7 +175,7 @@ body.light-theme #card-mod-4:hover {
   box-shadow: 0 8px 20px rgba(16, 185, 129, 0.12) !important;
 }
 
-/* 3. Typography Hierarchy & Brand in Light Mode */
+/* 4. Typography Hierarchy & Brand in Light Mode */
 body.light-theme #main-brand-title {
   background-image: linear-gradient(to right, #065f46, #059669, #0d9488) !important;
   -webkit-background-clip: text !important;
@@ -145,7 +216,10 @@ body.light-theme #total-kwh,
 body.light-theme #temp-mod-1,
 body.light-theme #temp-mod-2,
 body.light-theme #temp-mod-3,
-body.light-theme #temp-mod-4 {
+body.light-theme #temp-mod-4,
+body.light-theme #lap-current-time,
+body.light-theme #cell-voltage-min,
+body.light-theme #cell-voltage-max {
   color: #0f172a !important;
 }
 
@@ -153,12 +227,12 @@ body.light-theme #battery-pct {
   color: #059669 !important;
 }
 
-/* 4. High-Contrast Yellow/Amber for Light Mode */
+/* 5. High-Contrast Yellow/Amber for Light Mode */
 body.light-theme .text-yellow-300,
 body.light-theme .text-yellow-400,
 body.light-theme .text-amber-300,
 body.light-theme .text-amber-400 {
-  color: #d97706 !important; /* Deep Amber for clear readability on white */
+  color: #d97706 !important;
 }
 
 body.light-theme .bg-yellow-500\/10,
@@ -167,10 +241,11 @@ body.light-theme .bg-amber-500\/15 {
   border-color: #fde68a !important;
 }
 
-/* 5. Emerald Accents for Light Mode */
+/* 6. Emerald Accents for Light Mode */
 body.light-theme .text-emerald-300,
 body.light-theme .text-emerald-400 {
-  color: #059669 !important;
+  color: #047857 !important;
+  font-weight: 700 !important;
 }
 
 body.light-theme .bg-emerald-500\/10,
@@ -180,12 +255,29 @@ body.light-theme .bg-emerald-500\/20 {
   border-color: #a7f3d0 !important;
 }
 
-/* 6. Orange & Alert Accents for Light Mode */
-body.light-theme .text-orange-400 {
-  color: #ea580c !important;
+/* 7. Purple Accents & Sector S1 Badges for Light Mode */
+body.light-theme .text-purple-300,
+body.light-theme .text-purple-400,
+body.light-theme #lap-best-time {
+  color: #6b21a8 !important; /* Deep High-Contrast Violet */
+  font-weight: 700 !important;
 }
 
-body.light-theme .bg-orange-500\/15 {
+body.light-theme .bg-purple-500\/15 {
+  background-color: #f3e8ff !important;
+  border-color: #d8b4fe !important;
+}
+
+/* 8. Orange, Amber & S3 Accents for Light Mode */
+body.light-theme .text-orange-400,
+body.light-theme .text-amber-300,
+body.light-theme .text-amber-400 {
+  color: #b45309 !important; /* Deep Rich Amber */
+  font-weight: 700 !important;
+}
+
+body.light-theme .bg-orange-500\/15,
+body.light-theme .bg-amber-500\/15 {
   background-color: #fff7ed !important;
   border-color: #fed7aa !important;
 }
@@ -200,30 +292,49 @@ body.light-theme .bg-amber-950\/20 {
   border-color: #fbbf24 !important;
 }
 
-/* 7. Hardware & Telemetry Simulator Container at Bottom */
-body.light-theme .p-6.rounded-2xl.bg-gradient-to-r.from-slate-900 {
-  background-image: none !important;
-  background-color: rgba(255, 255, 255, 0.96) !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05) !important;
+/* 8. G-Force Radar in Light Mode */
+body.light-theme .gforce-radar {
+  background: radial-gradient(circle, rgba(0, 230, 118, 0.08) 0%, rgba(241, 245, 249, 0.95) 75%) !important;
+  border-color: #cbd5e1 !important;
 }
 
-/* 8. Progress Tracks & Sliders */
+body.light-theme .gforce-circle {
+  border-color: rgba(5, 150, 105, 0.3) !important;
+}
+
+/* 9. Hardware & Telemetry Simulator Container at Bottom */
+body.light-theme .p-3.rounded-2xl.bg-gradient-to-r,
+body.light-theme .p-4.rounded-2xl.bg-gradient-to-r,
+body.light-theme .p-5.rounded-2xl.bg-gradient-to-r,
+body.light-theme .p-6.rounded-2xl.bg-gradient-to-r {
+  background-image: none !important;
+  background-color: rgba(255, 255, 255, 0.97) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 10. Progress Tracks, Mini Badges & Sliders */
 body.light-theme .speed-bg-track {
   stroke: #e2e8f0 !important;
 }
 
 body.light-theme .bg-slate-950,
+body.light-theme .bg-slate-950\/80,
+body.light-theme .bg-slate-950\/90,
+body.light-theme .bg-slate-900,
+body.light-theme .bg-slate-900\/90,
+body.light-theme .bg-slate-900\/95,
 body.light-theme .bg-slate-800 {
-  background-color: #e2e8f0 !important;
-  border-color: #cbd5e1 !important;
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
 }
 
 body.light-theme input[type=range] {
   background: #e2e8f0 !important;
 }
 
-/* 9. Borders */
+/* 11. Borders */
 body.light-theme .border-slate-800,
 body.light-theme .border-slate-800\/80,
 body.light-theme .border-slate-700,
@@ -233,7 +344,7 @@ body.light-theme .border-cyber-border\/80 {
   border-color: #e2e8f0 !important;
 }
 
-/* 10. Alert Log Rows in Light Mode */
+/* 12. Alert Log Rows in Light Mode */
 body.light-theme #alerts-container > div {
   background-color: #f8fafc !important;
   border-color: #e2e8f0 !important;
@@ -241,11 +352,11 @@ body.light-theme #alerts-container > div {
 }
 
 body.light-theme .alert-title {
-  color: #0f172a !important; /* Dark Slate 900 - คมชัด ไม่แสบตา */
+  color: #0f172a !important;
 }
 
 body.light-theme .alert-msg {
-  color: #475569 !important; /* Slate 600 - สบายตา */
+  color: #475569 !important;
 }
 
 body.light-theme .alert-time {
@@ -261,7 +372,7 @@ body.light-theme .alert-icon-box {
 body.light-theme .text-cyan-300,
 body.light-theme .text-cyan-400,
 body.light-theme .text-cyan-500 {
-  color: #0369a1 !important; /* เปลี่ยนสีฟ้านีออนสว่างแสบตาเป็นสีน้ำเงินเข้มสบายตา */
+  color: #0369a1 !important;
 }
 
 body.light-theme #alerts-container::-webkit-scrollbar-track {
@@ -270,4 +381,202 @@ body.light-theme #alerts-container::-webkit-scrollbar-track {
 
 body.light-theme #alerts-container::-webkit-scrollbar-thumb {
   background: #cbd5e1;
+}
+
+/* 13. Header Quick Action Buttons in Light Mode */
+body.light-theme #sfx-toggle-btn,
+body.light-theme #fullscreen-btn,
+body.light-theme #theme-toggle-btn,
+body.light-theme #sfx-toggle-btn-mobile,
+body.light-theme #fullscreen-btn-mobile,
+body.light-theme #theme-toggle-btn-mobile {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme #sfx-toggle-btn span,
+body.light-theme #fullscreen-btn span,
+body.light-theme #theme-toggle-btn span {
+  color: #1e293b !important;
+}
+
+/* 14. CAN-Bus Inspector Modal in Light Mode */
+body.light-theme #can-modal > div {
+  background-color: #ffffff !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light-theme #can-modal .bg-slate-900\/95,
+body.light-theme #can-modal .bg-slate-950 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-theme #can-modal h3,
+body.light-theme #can-modal .can-packet-card .font-bold.text-white {
+  color: #0f172a !important;
+}
+
+body.light-theme #can-modal .can-packet-card {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-theme #can-modal .can-hex-box {
+  background-color: #f1f5f9 !important;
+  color: #047857 !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme #can-modal .can-decoded-box,
+body.light-theme #can-modal .bg-slate-950\/70 {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+body.light-theme #can-modal .can-decoded-box strong {
+  color: #047857 !important;
+}
+
+body.light-theme #can-modal .can-decoded-text {
+  color: #334155 !important;
+}
+
+body.light-theme #can-modal .can-tab-btn:not(.bg-emerald-500) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+body.light-theme #can-modal .can-tab-btn.bg-emerald-500 {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme #close-can-modal-btn:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* 15. Race Summary Report Modal in Light Mode */
+body.light-theme #report-modal > div {
+  background-color: #ffffff !important;
+  border-color: #a855f7 !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light-theme #report-modal .bg-slate-950,
+body.light-theme #report-modal .bg-slate-950\/80,
+body.light-theme #report-modal .bg-slate-950\/60 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-theme #report-modal h3,
+body.light-theme #report-modal h4,
+body.light-theme #report-modal .font-bold.text-white {
+  color: #0f172a !important;
+}
+
+body.light-theme #report-modal .bg-slate-900 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-theme #report-modal .bg-emerald-950\/20 {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+body.light-theme #close-report-modal-btn {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+/* 16. Print Styles for Official A4 / PDF Export */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #report-modal,
+  #report-modal * {
+    visibility: visible;
+  }
+  #report-modal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    display: block !important;
+  }
+  #report-modal-content {
+    border: 2px solid #334155 !important;
+    box-shadow: none !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    max-height: none !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+  #report-modal-content * {
+    color: #0f172a !important;
+    background-color: transparent !important;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+}
+
+/* 17. EV Shift Lights (LED Glowing States & Dual-Mode Power/Regen) */
+.shift-led {
+  transition: all 0.08s ease-out;
+}
+
+.shift-led.active-green {
+  background-color: #00e676 !important;
+  border-color: #69f0ae !important;
+  box-shadow: 0 0 10px #00e676, 0 0 3px #ffffff !important;
+}
+
+.shift-led.active-yellow {
+  background-color: #ffb300 !important;
+  border-color: #ffe082 !important;
+  box-shadow: 0 0 10px #ffb300, 0 0 3px #ffffff !important;
+}
+
+.shift-led.active-red {
+  background-color: #ff1744 !important;
+  border-color: #ff8a80 !important;
+  box-shadow: 0 0 12px #ff1744, 0 0 4px #ffffff !important;
+}
+
+.shift-led.active-purple {
+  background-color: #d500f9 !important;
+  border-color: #ea80fc !important;
+  box-shadow: 0 0 14px #d500f9, 0 0 5px #ffffff !important;
+}
+
+.shift-led.active-regen {
+  background-color: #00e5ff !important;
+  border-color: #80d8ff !important;
+  box-shadow: 0 0 12px #00e5ff, 0 0 4px #ffffff !important;
+}
+
+body.light-theme #ev-shift-lights-container {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light-theme .shift-led:not([class*="active-"]) {
+  background-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
 }
