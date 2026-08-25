@@ -67,11 +67,11 @@
 
   <div class="relative z-10 max-w-[1850px] mx-auto px-3 sm:px-5 py-3.5 space-y-3.5">
     
-    <!-- HEADER BAR: PIT WALL RACE COMMAND & LAP STRATEGY -->
-    <header class="p-3 sm:p-4 rounded-2xl bg-cyber-card/90 border border-cyber-border backdrop-blur-xl shadow-card-glass flex flex-col xl:flex-row items-center justify-between gap-3">
+    <!-- HEADER BAR: PIT WALL RACE COMMAND & LAP STRATEGY (12-COL GRID TO MATCH ROW 1 COLUMNS) -->
+    <header class="p-3 sm:p-4 rounded-2xl bg-cyber-card/90 border border-cyber-border backdrop-blur-xl shadow-card-glass grid grid-cols-1 xl:grid-cols-12 items-center gap-3.5">
       
-      <!-- Brand & Team Title -->
-      <div class="flex items-center gap-3 w-full xl:w-auto justify-between xl:justify-start">
+      <!-- Brand & Team Title (4 Cols - LEFT ALIGNED) -->
+      <div class="xl:col-span-4 flex items-center justify-between xl:justify-start gap-3 w-full">
         <div class="flex items-center gap-3">
           <div class="relative w-11 h-11 rounded-xl bg-slate-900/80 border border-emerald-500/40 p-1 flex items-center justify-center shadow-neon-cyan shrink-0 overflow-hidden backdrop-blur-md">
             <img src="Ecomile lab.png" alt="Ecomile Lab Logo" class="w-full h-full object-contain rounded-lg">
@@ -79,19 +79,18 @@
           <div>
             <div class="flex items-center gap-2 flex-wrap">
               <h1 class="text-base sm:text-lg font-black tracking-wider font-digital text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-green-300 to-teal-300" id="main-brand-title">
-                ECOMILE LAB
+                ECOMILE UC-01
               </h1>
               <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-digital">
-                PIT COMMAND
+                SEM QATAR 2027
               </span>
             </div>
             <p class="text-[11px] text-slate-400">
-              Quad STM32 CAN-Bus Telemetry & Race Engineering System
+              Urban Concept Battery Electric • Lusail Circuit (14.8 km / 35 min)
             </p>
           </div>
         </div>
 
-        <!-- Mobile Theme Toggle -->
         <!-- Mobile Quick Controls -->
         <div class="flex items-center gap-1.5 xl:hidden">
           <button id="report-btn-mobile" class="p-2 rounded-lg bg-slate-900/90 border border-slate-700 text-purple-400" title="สร้างรายงานผลการแข่ง (PDF)">
@@ -109,79 +108,72 @@
         </div>
       </div>
 
-      <!-- RACE STRATEGY & LAP TIMING BAR (CENTERPIECE FOR TENT SCREEN) -->
-      <div class="flex items-center flex-wrap justify-center gap-2 sm:gap-3 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-700/80 text-xs w-full xl:w-auto shadow-sm">
-        
-        <!-- Lap Counter -->
-        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">
-          <span class="text-slate-400 font-mono text-[11px]">LAP</span>
-          <span class="text-emerald-400 font-bold font-digital text-sm" id="lap-counter">8 / 15</span>
-        </div>
+      <!-- RACE STRATEGY & LAP TIMING BAR (4 Cols - EXACT CENTER, ALIGNED OVER SPEEDOMETER) -->
+      <div class="xl:col-span-4 flex items-center justify-center w-full">
+        <div class="flex items-center justify-center gap-2 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-700/80 text-xs shadow-sm whitespace-nowrap">
+          
+          <!-- Lap Counter (4 Laps @ Lusail Circuit = 14.8 km) -->
+          <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-slate-950 border border-slate-800">
+            <span class="text-slate-400 font-mono text-[10px]">LAP</span>
+            <span class="text-emerald-400 font-bold font-digital text-xs" id="lap-counter">2 / 4</span>
+          </div>
 
-        <!-- Live Lap Timer -->
-        <div class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">
-          <div class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
-          <span class="text-slate-400 text-[11px]">TIME:</span>
-          <span class="text-white font-black font-digital text-sm tracking-wider" id="lap-current-time">01:42.85</span>
-        </div>
+          <!-- Stop & Go Counter (Article 227: 2 Compulsory Stops per Lap at Lusail) -->
+          <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/25" title="Article 227: 2 Compulsory Complete Stops per Lap at Lusail Circuit">
+            <i data-lucide="octagon" class="w-3 h-3 text-amber-400"></i>
+            <span class="text-amber-400 font-mono text-[10px] font-bold">STOP &amp; GO:</span>
+            <span class="text-amber-300 font-black font-digital text-xs" id="stop-go-counter">1 / 2</span>
+          </div>
 
-        <!-- Best Lap -->
-        <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">
-          <span class="text-slate-400 text-[11px]">BEST:</span>
-          <span class="text-purple-400 font-bold font-digital text-sm" id="lap-best-time">01:38.20</span>
-        </div>
+          <!-- Live Lap Timer & Session Target (Article 226: 35 min limit) -->
+          <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-slate-950 border border-slate-800">
+            <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></div>
+            <span class="text-slate-400 text-[10px]">TIME:</span>
+            <span class="text-white font-black font-digital text-xs tracking-wider" id="lap-current-time">07:42.85</span>
+          </div>
 
-        <!-- Delta vs Best -->
-        <div class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/25">
-          <span class="text-slate-400 text-[11px]">&Delta;:</span>
-          <span class="font-bold font-digital text-xs text-emerald-400" id="lap-delta-val">-0.35s</span>
-        </div>
-
-        <!-- Sector Times -->
-        <div class="hidden md:flex items-center gap-1.5 text-[10px] font-mono text-slate-400">
-          <span class="bg-purple-500/15 text-purple-300 px-1.5 py-0.5 rounded border border-purple-500/30">S1: 28.4s</span>
-          <span class="bg-emerald-500/15 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-500/30">S2: 41.2s</span>
-          <span class="bg-amber-500/15 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30">S3: 33.2s</span>
+          <!-- Target Pace (Min 25.4 km/h to finish in 35 min) -->
+          <div class="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/25">
+            <span class="text-slate-400 text-[10px]">PACE:</span>
+            <span class="font-bold font-digital text-xs text-emerald-400" id="lap-delta-val">28.4 km/h</span>
+          </div>
         </div>
       </div>
 
-      <!-- Telemetry Stream Link & Quick Action Tools -->
-      <div class="hidden xl:flex items-center gap-2 text-xs">
+      <!-- Telemetry Stream Link & Quick Action Tools (Ultra-Compact Icon Bar to Avoid Any Overlap) -->
+      <div class="hidden xl:flex items-center justify-end gap-1.5 text-xs shrink-0 xl:col-span-4">
         
-        <!-- Drive Mode -->
-        <div class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-900/90 border border-slate-800">
-          <span class="text-slate-400 text-[10px]">MODE:</span>
-          <span class="font-bold font-digital text-emerald-400 uppercase tracking-wide text-xs" id="header-drive-mode">SPORT</span>
+        <!-- Drive Mode Badge -->
+        <div class="h-9 px-2.5 py-1 rounded-xl bg-slate-900/90 border border-slate-700/80 flex items-center gap-1.5 whitespace-nowrap shadow-sm">
+          <span class="text-slate-400 text-[10px] font-mono font-semibold">MODE:</span>
+          <span class="font-bold font-digital text-emerald-400 uppercase tracking-wide text-xs" id="header-drive-mode">RACE PACE</span>
         </div>
 
         <!-- Official Race Summary Report Button -->
-        <button id="report-btn" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-purple-400/50 text-purple-400 hover:text-purple-300 transition-all cursor-pointer shadow-sm" title="สร้างรายงานสรุปผลการแข่งขัน (Official PDF Report)">
+        <button id="report-btn" class="h-9 px-2.5 py-1 rounded-xl bg-slate-900/90 border border-slate-700/80 hover:border-purple-400/50 text-purple-400 hover:text-purple-300 flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer shadow-sm" title="สร้างรายงานสรุปผลการแข่งขัน (Official PDF Report)">
           <i data-lucide="file-text" class="w-3.5 h-3.5" id="report-icon"></i>
-          <span class="text-xs font-semibold text-slate-300" id="report-label">Report</span>
+          <span class="text-xs font-semibold text-slate-200" id="report-label">Report</span>
         </button>
 
-        <!-- SFX Audio Toggle Button -->
-        <button id="sfx-toggle-btn" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-cyan-400/50 text-cyan-400 hover:text-cyan-300 transition-all cursor-pointer shadow-sm" title="เปิด/ปิดเสียงวิทยุและเสียงเตือน">
-          <i data-lucide="volume-2" class="w-3.5 h-3.5" id="sfx-icon"></i>
-          <span class="text-xs font-semibold text-slate-300" id="sfx-label">SFX: ON</span>
+        <!-- 1. Theme Toggle (Icon Only) -->
+        <button id="theme-toggle-btn" class="w-9 h-9 rounded-xl bg-slate-900/90 border border-slate-700/80 hover:border-amber-400/50 text-amber-400 hover:text-amber-300 flex items-center justify-center transition-all cursor-pointer shadow-sm" title="สลับโหมดพื้นหลัง Dark / Light">
+          <i data-lucide="sun" class="w-4 h-4" id="theme-icon"></i>
         </button>
 
-        <!-- Fullscreen Tent Display Toggle -->
-        <button id="fullscreen-btn" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-emerald-400/50 text-emerald-400 hover:text-emerald-300 transition-all cursor-pointer shadow-sm" title="ขยายเต็มหน้าจอทีวีเต็นท์พิท">
-          <i data-lucide="maximize" class="w-3.5 h-3.5" id="fullscreen-icon"></i>
-          <span class="text-xs font-semibold text-slate-300" id="fullscreen-label">Fullscreen</span>
+        <!-- 2. SFX Audio Toggle (High Contrast & Vibrant Glow) -->
+        <button id="sfx-toggle-btn" class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400/60 text-cyan-300 hover:text-white hover:bg-cyan-500/30 flex items-center justify-center transition-all cursor-pointer shadow-[0_0_10px_rgba(6,182,212,0.3)]" title="เปิด/ปิดเสียงวิทยุและเสียงเตือน SFX">
+          <i data-lucide="volume-2" class="w-4 h-4 stroke-[2.5]" id="sfx-icon"></i>
         </button>
 
-        <!-- Theme Toggle -->
-        <button id="theme-toggle-btn" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700/80 hover:border-amber-400/50 text-amber-400 hover:text-amber-300 transition-all cursor-pointer shadow-sm" title="สลับโหมดพื้นหลัง ขาว/ดำ">
-          <i data-lucide="sun" class="w-3.5 h-3.5" id="theme-icon"></i>
-          <span class="text-xs font-semibold text-slate-300" id="theme-label">Light Mode</span>
+        <!-- 3. Fullscreen Display Toggle (Icon Only - Swapped to right side) -->
+        <button id="fullscreen-btn" class="w-9 h-9 rounded-xl bg-slate-900/90 border border-slate-700/80 hover:border-emerald-400/50 text-emerald-400 hover:text-emerald-300 flex items-center justify-center transition-all cursor-pointer shadow-sm" title="ขยายเต็มหน้าจอทีวีเต็นท์พิท">
+          <i data-lucide="maximize" class="w-4 h-4" id="fullscreen-icon"></i>
         </button>
 
         <!-- Live Clock -->
-        <div class="text-right font-mono px-2 py-0.5 rounded-lg bg-slate-900/90 border border-slate-800 min-w-[70px]">
-          <div class="text-xs font-bold text-slate-200" id="live-clock">00:00:00</div>
-          <div class="text-[9px] text-emerald-400/80">LAT: <span id="telemetry-latency">12</span>ms</div>
+        <div class="h-9 px-2.5 py-0.5 rounded-xl bg-slate-900/90 border border-slate-700/80 flex flex-col justify-center text-right font-mono min-w-[76px] shadow-sm">
+          <div class="text-xs font-bold text-slate-200 leading-tight" id="live-clock">00:00:00</div>
+          <div class="text-[9px] text-emerald-400/80 leading-tight">LAT: <span id="telemetry-latency">12</span>ms</div>
         </div>
       </div>
     </header>
@@ -198,10 +190,10 @@
             </div>
             <div class="min-w-0">
               <h2 class="text-xs font-bold tracking-wide uppercase text-slate-200">Battery Pack & Cells</h2>
-              <span class="text-[10px] text-slate-400 block">สถานะแพ็กแบตเตอรี่ & สมดุลเซลล์</span>
+              <span class="text-[10px] text-slate-400 block">สถานะแพ็กแบตเตอรี่ & สมดุลเซลล์ (SEM &lt;60V)</span>
             </div>
           </div>
-          <span class="text-xs font-mono font-bold text-emerald-400 bg-slate-900/90 px-2 py-0.5 rounded-lg border border-slate-700/80 shrink-0" id="battery-voltage">392.4 V</span>
+          <span class="text-xs font-mono font-bold text-emerald-400 bg-slate-900/90 px-2 py-0.5 rounded-lg border border-slate-700/80 shrink-0" id="battery-voltage">51.2 V</span>
         </div>
 
         <!-- Battery SoC & Estimated Range Grid -->
@@ -222,10 +214,10 @@
           <div class="text-center p-2.5 rounded-xl bg-gradient-to-r from-slate-900/95 via-emerald-950/40 to-slate-900/95 border border-emerald-500/40 relative">
             <span class="text-[10px] text-slate-300 font-medium block">Estimated Range</span>
             <div class="flex items-baseline justify-center gap-1 my-0.5">
-              <span class="text-3xl font-black font-digital text-white" id="range-km">340</span>
+              <span class="text-3xl font-black font-digital text-white" id="range-km">68</span>
               <span class="text-xs font-bold text-emerald-400 font-digital">KM</span>
             </div>
-            <span class="text-[9px] font-mono text-emerald-400/90 block">CAN DYNAMIC</span>
+            <span class="text-[9px] font-mono text-emerald-400/90 block">14.8 KM RACE TARGET</span>
           </div>
         </div>
 
@@ -238,32 +230,32 @@
               <span class="text-[10px] text-slate-400">กระแสไฟ (Discharge / Regen)</span>
             </div>
             <div class="text-right">
-              <span class="font-digital font-black text-amber-400 text-lg sm:text-xl" id="pack-current">+42.5 A</span>
+              <span class="font-digital font-black text-amber-400 text-lg sm:text-xl" id="pack-current">+18.4 A</span>
             </div>
           </div>
           
           <!-- Cell Delta Balance (ΔV) -->
           <div class="flex justify-between items-center">
             <span class="text-xs text-slate-300 font-medium">Cell Delta (&Delta;V Balance):</span>
-            <span class="font-digital font-bold text-emerald-400 text-xs sm:text-sm bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/25" id="cell-delta">0.024 V (BALANCED)</span>
+            <span class="font-digital font-bold text-emerald-400 text-xs sm:text-sm bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/25" id="cell-delta">0.022 V (BALANCED)</span>
           </div>
 
-          <!-- Min / Max Voltage Boxes -->
+          <!-- Min / Max Voltage Boxes (14S Lithium-ion Pack) -->
           <div class="grid grid-cols-2 gap-2 pt-0.5">
             <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800 flex flex-col justify-between">
               <span class="text-[10px] text-slate-400 font-mono block">MIN CELL</span>
-              <span class="text-sm font-bold font-digital text-white mt-0.5" id="cell-voltage-min">3.821 V</span>
+              <span class="text-sm font-bold font-digital text-white mt-0.5" id="cell-voltage-min">3.652 V</span>
             </div>
             <div class="bg-slate-950/80 p-2 rounded-xl border border-slate-800 flex flex-col justify-between text-right">
               <span class="text-[10px] text-slate-400 font-mono block">MAX CELL</span>
-              <span class="text-sm font-bold font-digital text-white mt-0.5" id="cell-voltage-max">3.845 V</span>
+              <span class="text-sm font-bold font-digital text-white mt-0.5" id="cell-voltage-max">3.674 V</span>
             </div>
           </div>
         </div>
 
         <div class="text-[10px] text-slate-400 flex justify-between items-center pt-2 border-t border-slate-800/80 mt-1">
-          <span>Capacity: <strong class="text-slate-200 font-mono">64.8 kWh</strong></span>
-          <span class="text-emerald-400 font-mono font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20" id="battery-health">SOH: 99.4%</span>
+          <span>Capacity: <strong class="text-slate-200 font-mono">864 Wh (48V 18Ah)</strong></span>
+          <span class="text-emerald-400 font-mono font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20" id="battery-health">SOH: 99.6%</span>
         </div>
       </div>
 
@@ -276,7 +268,7 @@
             </div>
             <div>
               <h2 class="text-xs font-bold tracking-wider uppercase text-emerald-300">Vehicle Speedometer</h2>
-              <span class="text-[10px] text-slate-400">ความเร็วหลักและระบบส่งกำลัง</span>
+              <span class="text-[10px] text-slate-400">ความเร็วหลักและระบบส่งกำลัง Urban Concept</span>
             </div>
           </div>
           <div class="flex items-center gap-1 bg-slate-900/95 px-2 py-0.5 rounded-lg border border-slate-700/80 text-xs shadow-sm">
@@ -319,7 +311,7 @@
           <!-- RPM Bar -->
           <div>
             <div class="flex justify-between items-baseline mb-0.5">
-              <span class="text-[11px] text-slate-300 font-semibold">Motor RPM (รอบหมุน)</span>
+              <span class="text-[11px] text-slate-300 font-semibold">Motor RPM (รอบหมุน BLDC)</span>
               <div class="text-right">
                 <span class="text-base font-black font-digital text-emerald-400" id="rpm-value">0</span>
                 <span class="text-[10px] font-mono text-slate-400 ml-0.5">RPM</span>
@@ -339,12 +331,12 @@
                 <div class="text-[10px] text-slate-300 font-medium">Motor Temp</div>
               </div>
               <div class="text-right">
-                <span class="font-digital font-bold text-white text-xs" id="motor-temp-value">42.5</span>
+                <span class="font-digital font-bold text-white text-xs" id="motor-temp-value">41.2</span>
                 <span class="text-[10px] font-bold text-orange-400">°C</span>
               </div>
             </div>
 
-            <!-- Torque (Now styled with matching emerald glow border & icon) -->
+            <!-- Torque -->
             <div class="p-2 rounded-xl bg-gradient-to-r from-slate-900/95 via-emerald-950/40 to-slate-900/95 border border-emerald-500/40 flex items-center justify-between">
               <div class="flex items-center gap-1.5">
                 <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
@@ -358,8 +350,8 @@
         </div>
 
         <div class="text-[10px] text-slate-400 flex justify-between items-center pt-2 border-t border-slate-800/80 mt-2">
-          <span>SiC Inverter: Dual MOSFET</span>
-          <span class="text-emerald-400 font-mono font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">EFF: 97.4%</span>
+          <span>SiC Inverter: FOC Driver (Article 66)</span>
+          <span class="text-emerald-400 font-mono font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">EFF: 98.2%</span>
         </div>
       </div>
 
@@ -372,14 +364,14 @@
             </div>
             <div>
               <h2 class="text-xs font-bold tracking-wider uppercase text-slate-200">Energy & Power Flow</h2>
-              <span class="text-[10px] text-slate-400">อัตราการใช้พลังงาน & กลยุทธ์รอบ</span>
+              <span class="text-[10px] text-slate-400">อัตราการใช้พลังงาน & Shell Joulemeter</span>
             </div>
           </div>
 
           <!-- Energy Target vs Actual Budget (Pit Strategy) -->
           <div class="px-2 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-right">
-            <span class="text-[9px] text-amber-400 block font-mono font-semibold">BUDGET: 120 Wh/lap</span>
-            <span class="text-xs font-bold font-digital text-white" id="avg-consumption">14.8 kWh/100km</span>
+            <span class="text-[9px] text-amber-400 block font-mono font-semibold">BUDGET: 216 Wh/lap</span>
+            <span class="text-xs font-bold font-digital text-white" id="avg-consumption">124.5 km/kWh</span>
           </div>
         </div>
 
@@ -392,21 +384,21 @@
         <div class="grid grid-cols-3 gap-2 text-xs pt-2 border-t border-slate-800/80">
           <div class="p-2 rounded-xl bg-gradient-to-br from-slate-900/95 to-amber-950/20 border border-amber-500/30 text-center">
             <div class="text-slate-400 text-[10px]">Instant Power</div>
-            <div class="font-digital font-black text-amber-400 text-sm mt-0.5" id="instant-power">0.0 kW</div>
+            <div class="font-digital font-black text-amber-400 text-sm mt-0.5" id="instant-power">0 W</div>
           </div>
           <div class="p-2 rounded-xl bg-gradient-to-br from-slate-900/95 to-emerald-950/20 border border-emerald-500/30 text-center">
-            <div class="text-slate-400 text-[10px]">Total Energy</div>
-            <div class="font-digital font-black text-white text-sm mt-0.5" id="total-kwh">1.42 kWh</div>
+            <div class="text-slate-400 text-[10px]">Joulemeter (Wh)</div>
+            <div class="font-digital font-black text-white text-sm mt-0.5" id="total-kwh">0.48 kWh</div>
           </div>
           <div class="p-2 rounded-xl bg-gradient-to-br from-slate-900/95 to-green-950/20 border border-green-500/30 text-center">
-            <div class="text-slate-400 text-[10px]">Regen Energy</div>
-            <div class="font-digital font-black text-emerald-400 text-sm mt-0.5" id="regen-kwh">+0.38 kWh</div>
+            <div class="text-slate-400 text-[10px]">Regen Recovery</div>
+            <div class="font-digital font-black text-emerald-400 text-sm mt-0.5" id="regen-kwh">+0.11 kWh</div>
           </div>
         </div>
 
         <div class="text-[10px] text-slate-400 flex justify-between items-center pt-2 border-t border-slate-800/80 mt-2">
-          <span>Strategy Pace</span>
-          <span class="text-emerald-400 font-mono font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">TARGET: ON PACE</span>
+          <span>Official Joulemeter (SEM)</span>
+          <span class="text-emerald-400 font-mono font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20" id="joulemeter-val">1,728,000 J (480 Wh)</span>
         </div>
       </div>
 
@@ -565,18 +557,18 @@
             </div>
           </div>
 
-          <!-- 0-100 Drag Timer & Peak Speed -->
+          <!-- 0-30 Launch Timer & Peak Speed -->
           <div class="col-span-6 space-y-2 text-xs">
             
-            <!-- 0-100 Stopwatch -->
+            <!-- 0-30 km/h Stop & Go Launch Stopwatch -->
             <div class="p-2 rounded-xl bg-slate-900/90 border border-slate-700/80">
               <div class="flex justify-between items-center text-[10px] text-slate-400 mb-0.5">
-                <span>0-100 km/h Sprint:</span>
+                <span>0-30 km/h Launch (Art 227):</span>
                 <span class="text-[9px] text-emerald-400 font-mono">LIVE</span>
               </div>
               <div class="flex items-baseline justify-between">
-                <span class="text-xl font-black font-digital text-emerald-400" id="accel-stat">3.42s</span>
-                <span class="text-[9px] font-mono text-slate-500">STOPWATCH</span>
+                <span class="text-xl font-black font-digital text-emerald-400" id="accel-stat">2.45s</span>
+                <span class="text-[9px] font-mono text-slate-500">STOP&amp;GO</span>
               </div>
             </div>
 
@@ -588,7 +580,7 @@
               </div>
               <div class="flex items-baseline justify-between">
                 <span class="text-xl font-black font-digital text-white" id="max-speed-stat">0 km/h</span>
-                <span class="text-[9px] font-mono text-slate-500">TOP REC</span>
+                <span class="text-[9px] font-mono text-slate-500">MAX 55 KM/H</span>
               </div>
             </div>
 
@@ -598,7 +590,7 @@
 
         <div class="text-[10px] text-slate-400 flex justify-between items-center pt-2 border-t border-slate-800/80 mt-1 font-mono">
           <span>CHASSIS: STABLE</span>
-          <span class="text-emerald-400 font-bold">GRIP: 96.8%</span>
+          <span class="text-emerald-400 font-bold">GRIP: 98.2%</span>
         </div>
       </div>
 
@@ -626,7 +618,7 @@
           </div>
           <div class="min-w-0">
             <div class="text-[9px] font-mono text-emerald-400 font-bold tracking-wide">PIT STRATEGY RADIO:</div>
-            <div class="text-[11px] font-semibold text-slate-100 truncate" id="pit-radio-msg">PACE OPTIMAL • LIFT & COAST TURN 4</div>
+            <div class="text-[11px] font-semibold text-slate-100 truncate" id="pit-radio-msg">LUSAIL T2 • PREPARE FOR COMPULSORY STOP 1</div>
           </div>
         </div>
 
@@ -644,8 +636,8 @@
               <i data-lucide="check-circle-2" class="w-3 h-3"></i>
             </div>
             <div>
-              <div class="font-bold text-emerald-300 text-[11px]">All Systems Operational</div>
-              <div class="text-[10px] text-slate-400 font-mono">STM32 Modules 1-4 synced via CAN Bus @ 500kbps</div>
+              <div class="font-bold text-emerald-300 text-[11px]">SEM Scrutineering Checks Passed</div>
+              <div class="text-[10px] text-slate-400 font-mono">Pack &lt;60V DC, Dead Man switch armed, Dual Brakes 100%</div>
             </div>
             <span class="ml-auto text-[9px] text-slate-500 font-mono">NOW</span>
           </div>
@@ -654,9 +646,9 @@
         <div class="pt-2 border-t border-slate-800/80 flex justify-between items-center text-[10px] text-slate-400 mt-2 font-mono">
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>HVIL Interlock: <strong class="text-slate-200">CLOSED</strong></span>
+            <span>Dead Man's Switch: <strong class="text-emerald-400">ARMED (1)</strong></span>
           </div>
-          <span class="font-mono text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">DTC: 0</span>
+          <span class="font-mono text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">ESTOP: SAFE</span>
         </div>
       </div>
 
@@ -676,7 +668,7 @@
               <h3 class="text-xs font-bold uppercase tracking-wider text-slate-200">
                 Pit Engineering Simulator Controls
               </h3>
-              <p class="text-[10px] text-slate-400">แผงควบคุมจำลองสำหรับทดสอบระบบ</p>
+              <p class="text-[10px] text-slate-400">แผงควบคุมจำลองสำหรับทดสอบระบบ (Lusail Urban Concept)</p>
             </div>
           </div>
 
@@ -695,28 +687,28 @@
         <!-- Sliders & Drive Mode Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:w-3/5 text-xs">
           
-          <!-- Throttle Slider -->
+          <!-- Throttle Slider (0 to 55 km/h for Urban Concept) -->
           <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-700/80 space-y-1">
             <div class="flex justify-between text-[11px]">
               <label for="speed-slider" class="text-slate-200 font-semibold flex items-center gap-1">
                 <i data-lucide="gauge" class="w-3.5 h-3.5 text-emerald-400"></i>
-                <span>Manual Throttle</span>
+                <span>Throttle (0-55 km/h)</span>
               </label>
               <span class="font-mono text-emerald-400 font-bold" id="slider-speed-val">0 km/h</span>
             </div>
-            <input type="range" id="speed-slider" min="0" max="180" value="0" class="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+            <input type="range" id="speed-slider" min="0" max="55" value="0" class="w-full h-1.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-emerald-400">
           </div>
 
           <!-- Drive Mode -->
           <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-700/80 space-y-1">
             <div class="text-[11px] text-slate-200 font-semibold flex items-center gap-1">
               <i data-lucide="compass" class="w-3.5 h-3.5 text-emerald-400"></i>
-              <span>Drive Mode</span>
+              <span>Strategy Mode</span>
             </div>
             <div class="grid grid-cols-3 gap-1">
-              <button class="drive-mode-btn py-1 text-[11px] font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all" data-mode="ECO">ECO</button>
-              <button class="drive-mode-btn py-1 text-[11px] font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all" data-mode="NORMAL">NORMAL</button>
-              <button class="drive-mode-btn py-1 text-[11px] font-bold rounded-lg bg-emerald-400 text-black border border-emerald-300 shadow-neon-cyan transition-all" data-mode="SPORT">SPORT</button>
+              <button class="drive-mode-btn py-1 text-[11px] font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all" data-mode="ECO COAST">ECO</button>
+              <button class="drive-mode-btn py-1 text-[11px] font-bold rounded-lg bg-emerald-400 text-black border border-emerald-300 shadow-neon-cyan transition-all" data-mode="RACE PACE">PACE</button>
+              <button class="drive-mode-btn py-1 text-[11px] font-semibold rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition-all" data-mode="QUALIFY">QUAL</button>
             </div>
           </div>
 
@@ -725,7 +717,7 @@
             <div class="flex justify-between text-[11px]">
               <label for="battery-slider" class="text-slate-200 font-semibold flex items-center gap-1">
                 <i data-lucide="battery" class="w-3.5 h-3.5 text-emerald-400"></i>
-                <span>Set Battery SoC</span>
+                <span>Set Battery SoC (864Wh)</span>
               </label>
               <span class="font-mono text-emerald-400 font-bold" id="slider-battery-val">85%</span>
             </div>
@@ -826,10 +818,10 @@
           </div>
           <div>
             <div class="flex items-center gap-2 flex-wrap">
-              <h3 class="text-sm sm:text-base font-black uppercase tracking-wider text-white">ECOMILE EV INNOVATION • OFFICIAL TELEMETRY REPORT</h3>
-              <span class="px-2 py-0.5 text-[9px] font-mono bg-purple-500/20 text-purple-300 rounded border border-purple-500/30">TECHNICAL SCRUTINEERING</span>
+              <h3 class="text-sm sm:text-base font-black uppercase tracking-wider text-white">SHELL ECO-MARATHON QATAR 2027 • OFFICIAL TELEMETRY REPORT</h3>
+              <span class="px-2 py-0.5 text-[9px] font-mono bg-purple-500/20 text-purple-300 rounded border border-purple-500/30">URBAN CONCEPT (BATTERY ELECTRIC)</span>
             </div>
-            <p class="text-xs text-slate-400">เอกสารสรุปผลสมรรถนะและการใช้พลังงานระบบขับเคลื่อนไฟฟ้า Quad STM32</p>
+            <p class="text-xs text-slate-400">Lusail International Circuit • Technical Scrutineering &amp; Joulemeter Energy Sheet</p>
           </div>
         </div>
 
@@ -850,79 +842,79 @@
         <!-- Metadata Header Bar -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs">
           <div>
-            <span class="text-[10px] text-slate-500 block uppercase font-mono">Vehicle ID</span>
-            <span class="font-bold text-white font-mono">ECOMILE-EV01</span>
+            <span class="text-[10px] text-slate-500 block uppercase font-mono">Vehicle Entry</span>
+            <span class="font-bold text-white font-mono">ECOMILE-UC01</span>
           </div>
           <div>
-            <span class="text-[10px] text-slate-500 block uppercase font-mono">Telemetry Protocol</span>
-            <span class="font-bold text-emerald-400 font-mono">CAN 2.0B (500 kbps)</span>
+            <span class="text-[10px] text-slate-500 block uppercase font-mono">Regulation Standard</span>
+            <span class="font-bold text-emerald-400 font-mono">SEM 2027 Ch.I &amp; Ch.II</span>
           </div>
           <div>
-            <span class="text-[10px] text-slate-500 block uppercase font-mono">Drive Mode Profile</span>
-            <span class="font-bold text-amber-400 font-digital" id="rep-mode">SPORT</span>
+            <span class="text-[10px] text-slate-500 block uppercase font-mono">Drive Mode Strategy</span>
+            <span class="font-bold text-amber-400 font-digital" id="rep-mode">RACE PACE</span>
           </div>
           <div>
-            <span class="text-[10px] text-slate-500 block uppercase font-mono">Generated Timestamp</span>
-            <span class="font-bold text-slate-300 font-mono text-[11px]" id="rep-timestamp">2026-08-24 22:15:00</span>
+            <span class="text-[10px] text-slate-500 block uppercase font-mono">Timestamp (Lusail)</span>
+            <span class="font-bold text-slate-300 font-mono text-[11px]" id="rep-timestamp">2027-02-15 14:30:00</span>
           </div>
         </div>
 
-        <!-- 1. Track & Performance Metrics -->
+        <!-- 1. Track & Performance Metrics (Lusail Circuit Specifics) -->
         <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-2">
           <h4 class="font-bold text-purple-400 uppercase text-xs tracking-wider flex items-center gap-1.5">
             <i data-lucide="timer" class="w-3.5 h-3.5"></i>
-            <span>1. Session Timing & Acceleration Benchmarks</span>
+            <span>1. Session Timing &amp; Stop &amp; Go Compliance (Article 226, 227)</span>
           </h4>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="text-[10px] text-slate-400 block">Best Lap Time</span>
-              <span class="text-base font-black font-digital text-purple-400" id="rep-best-lap">01:38.20</span>
+              <span class="text-[10px] text-slate-400 block">Total Race Time</span>
+              <span class="text-base font-black font-digital text-purple-400" id="rep-best-lap">31:14.20 (&lt;35 min)</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="text-[10px] text-slate-400 block">0-100 km/h Sprint</span>
-              <span class="text-base font-black font-digital text-emerald-400" id="rep-sprint">3.30s</span>
+              <span class="text-[10px] text-slate-400 block">0-30 km/h Launch</span>
+              <span class="text-base font-black font-digital text-emerald-400" id="rep-sprint">2.45s</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="text-[10px] text-slate-400 block">Peak Top Speed</span>
-              <span class="text-base font-black font-digital text-white" id="rep-peak-speed">153 km/h</span>
+              <span class="text-[10px] text-slate-400 block">Average Race Pace</span>
+              <span class="text-base font-black font-digital text-white" id="rep-peak-speed">28.4 km/h</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="text-[10px] text-slate-400 block">Laps Completed</span>
-              <span class="text-base font-black font-digital text-amber-400" id="rep-laps">8 / 15</span>
+              <span class="text-[10px] text-slate-400 block">Laps &amp; Stop/Go</span>
+              <span class="text-base font-black font-digital text-amber-400" id="rep-laps">4 Laps (8 Stops)</span>
             </div>
           </div>
         </div>
 
-        <!-- 2. Energy Budgeting & Efficiency Analysis -->
+        <!-- 2. Energy Budgeting & Joulemeter Analysis -->
         <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-2">
           <h4 class="font-bold text-emerald-400 uppercase text-xs tracking-wider flex items-center gap-1.5">
             <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-            <span>2. Powertrain & Energy Budgeting Strategy</span>
+            <span>2. Joulemeter Energy Budgeting (Article 66: Max 1,000 Wh)</span>
           </h4>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
-              <span class="text-slate-400 text-[11px]">Total Energy Drawn:</span>
-              <span class="font-bold font-digital text-white text-xs" id="rep-total-energy">2.59 kWh</span>
+              <span class="text-slate-400 text-[11px]">Official Joulemeter:</span>
+              <span class="font-bold font-digital text-white text-xs" id="rep-total-energy">1,728,000 J (480 Wh)</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
               <span class="text-slate-400 text-[11px]">Regen Harvested:</span>
-              <span class="font-bold font-digital text-emerald-400 text-xs" id="rep-regen-energy">+0.57 kWh (22%)</span>
+              <span class="font-bold font-digital text-emerald-400 text-xs" id="rep-regen-energy">+110 Wh (22.9%)</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
               <span class="text-slate-400 text-[11px]">Net Efficiency:</span>
-              <span class="font-bold font-digital text-amber-300 text-xs">18.6 kWh/100km</span>
+              <span class="font-bold font-digital text-amber-300 text-xs">124.5 km/kWh</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
-              <span class="text-slate-400 text-[11px]">Final Pack SoC:</span>
-              <span class="font-bold font-digital text-emerald-400 text-xs" id="rep-soc">85% (392.4V)</span>
+              <span class="text-slate-400 text-[11px]">Pack Voltage (&lt;60V):</span>
+              <span class="font-bold font-digital text-emerald-400 text-xs" id="rep-soc">51.2 V (14S Li-ion)</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
-              <span class="text-slate-400 text-[11px]">Cell Delta (ΔV):</span>
-              <span class="font-bold font-digital text-emerald-400 text-xs" id="rep-delta">0.033 V (BALANCED)</span>
+              <span class="text-slate-400 text-[11px]">Cell Delta (&Delta;V):</span>
+              <span class="font-bold font-digital text-emerald-400 text-xs" id="rep-delta">0.022 V (BALANCED)</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
-              <span class="text-slate-400 text-[11px]">Battery SOH:</span>
-              <span class="font-bold font-digital text-emerald-400 text-xs">99.4% (Nominal)</span>
+              <span class="text-slate-400 text-[11px]">Battery Pack SOH:</span>
+              <span class="font-bold font-digital text-emerald-400 text-xs">99.6% (864 Wh Cap)</span>
             </div>
           </div>
         </div>
@@ -931,28 +923,28 @@
         <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-2">
           <h4 class="font-bold text-cyan-400 uppercase text-xs tracking-wider flex items-center gap-1.5">
             <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
-            <span>3. Quad STM32 Distributed Controller Thermal Scrutineering</span>
+            <span>3. Custom Firmware &amp; Distributed Hardware Scrutineering (Article 66)</span>
           </h4>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="text-[10px] text-slate-400 block truncate">BMU Master (F4)</span>
+              <span class="text-[10px] text-slate-400 block truncate">BMU Master (STM32F4)</span>
               <span class="font-bold font-digital text-white text-sm" id="rep-t-bmu">34.5°C</span>
-              <span class="text-[9px] text-emerald-400 block font-mono">STATUS: OK</span>
+              <span class="text-[9px] text-emerald-400 block font-mono">14S BALANCER: OK</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="text-[10px] text-slate-400 block truncate">Inverter Core (G4)</span>
+              <span class="text-[10px] text-slate-400 block truncate">Inverter Core (STM32G4)</span>
               <span class="font-bold font-digital text-white text-sm" id="rep-t-inv">38.2°C</span>
-              <span class="text-[9px] text-emerald-400 block font-mono">STATUS: OK</span>
+              <span class="text-[9px] text-emerald-400 block font-mono">FOC SiC: OK</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="text-[10px] text-slate-400 block truncate">Master VCU (H7)</span>
+              <span class="text-[10px] text-slate-400 block truncate">Master VCU (STM32H7)</span>
               <span class="font-bold font-digital text-white text-sm" id="rep-t-vcu">32.1°C</span>
-              <span class="text-[9px] text-emerald-400 block font-mono">STATUS: OK</span>
+              <span class="text-[9px] text-emerald-400 block font-mono">LOGIC: OK</span>
             </div>
             <div class="p-2 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="text-[10px] text-slate-400 block truncate">Pit Gateway (F1)</span>
+              <span class="text-[10px] text-slate-400 block truncate">Pit Gateway (STM32F1)</span>
               <span class="font-bold font-digital text-white text-sm" id="rep-t-gate">31.0°C</span>
-              <span class="text-[9px] text-emerald-400 block font-mono">STATUS: OK</span>
+              <span class="text-[9px] text-emerald-400 block font-mono">RF TELEMETRY: OK</span>
             </div>
           </div>
         </div>
@@ -962,13 +954,13 @@
           <div>
             <div class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 uppercase">
               <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
-              <span>Scrutineering Verdict: PASSED TECHNICAL ENVELOPE</span>
+              <span>Scrutineering Verdict: PASSED ALL SEM 2027 ARTICLES</span>
             </div>
-            <p class="text-[11px] text-slate-400 mt-0.5">High-voltage safety loop intact, thermal thresholds nominal, cell delta within safety margins (&lt;0.050V).</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Art 45 (Weight &lt;225kg), Art 66 (&lt;60V DC, &lt;1kWh), Art 51 (Dual Hydraulic Brakes), Art 37 (Dual E-Stops &amp; Dead Man Switch).</p>
           </div>
           <div class="flex gap-4 shrink-0 text-center text-[10px] text-slate-400 font-mono">
-            <div class="border-t border-slate-700 pt-1 w-28">Lead Engineer Sign</div>
-            <div class="border-t border-slate-700 pt-1 w-28">Chief Scrutineer</div>
+            <div class="border-t border-slate-700 pt-1 w-28">Team Leader Sign</div>
+            <div class="border-t border-slate-700 pt-1 w-28">Shell Scrutineer</div>
           </div>
         </div>
 

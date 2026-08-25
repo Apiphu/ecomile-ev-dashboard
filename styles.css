@@ -384,9 +384,11 @@ body.light-theme #alerts-container::-webkit-scrollbar-thumb {
 }
 
 /* 13. Header Quick Action Buttons in Light Mode */
+body.light-theme #report-btn,
 body.light-theme #sfx-toggle-btn,
 body.light-theme #fullscreen-btn,
 body.light-theme #theme-toggle-btn,
+body.light-theme #report-btn-mobile,
 body.light-theme #sfx-toggle-btn-mobile,
 body.light-theme #fullscreen-btn-mobile,
 body.light-theme #theme-toggle-btn-mobile {
@@ -394,6 +396,7 @@ body.light-theme #theme-toggle-btn-mobile {
   border-color: #cbd5e1 !important;
 }
 
+body.light-theme #report-btn span,
 body.light-theme #sfx-toggle-btn span,
 body.light-theme #fullscreen-btn span,
 body.light-theme #theme-toggle-btn span {
